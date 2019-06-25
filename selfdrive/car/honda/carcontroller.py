@@ -151,7 +151,7 @@ class CarController(object):
     can_sends.append(hondacan.create_steering_control(self.packer, apply_steer,
       lkas_active, CS.CP.carFingerprint, idx))
 
-    # Send dashboard UI commands.
+    """# Send dashboard UI commands.
     if (frame % 10) == 0:
       idx = (frame//10) % 4
       can_sends.extend(hondacan.create_ui_commands(self.packer, pcm_speed, hud, CS.CP.carFingerprint, CS.is_metric, idx))
@@ -175,6 +175,6 @@ class CarController(object):
         if CS.CP.enableGasInterceptor:
           # send exactly zero if apply_gas is zero. Interceptor will send the max between read value and apply_gas.
           # This prevents unexpected pedal range rescaling
-          can_sends.append(create_gas_command(self.packer, apply_gas, idx))
+          can_sends.append(create_gas_command(self.packer, apply_gas, idx))""""
 
     return can_sends
