@@ -111,7 +111,7 @@ def data_sample(rcv_times, CI, CC, plan_sock, path_plan_sock, thermal, calibrati
   if hh is not None:
     controls_allowed = hh.health.controlsAllowed
     if not controls_allowed and enabled:
-      mismatch_counter += 1
+      mismatch_counter += 0
     if mismatch_counter >= 2:
       events.append(create_event('controlsMismatch', [ET.IMMEDIATE_DISABLE]))
 
@@ -418,7 +418,7 @@ def controlsd_thread(gctx=None):
   carstate = messaging.pub_sock(context, service_list['carState'].port)
   carcontrol = messaging.pub_sock(context, service_list['carControl'].port)
 
-  is_metric = params.get("IsMetric") == "1"
+  is_metric = True
   passive = params.get("Passive") != "0"
 
   sendcan = messaging.pub_sock(context, service_list['sendcan'].port)
@@ -510,7 +510,7 @@ def controlsd_thread(gctx=None):
     path_plan_age = start_time - rcv_times['pathPlan']
     plan_age = start_time - rcv_times['plan']
 
-    if not path_plan.pathPlan.valid or plan_age > 0.5 or path_plan_age > 0.5:
+    """if not path_plan.pathPlan.valid or plan_age > 0.5 or path_plan_age > 0.5:
       events.append(create_event('plannerError', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if not path_plan.pathPlan.sensorValid:
       events.append(create_event('sensorDataInvalid', [ET.NO_ENTRY, ET.PERMANENT]))
@@ -525,7 +525,7 @@ def controlsd_thread(gctx=None):
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
     if CS.brakePressed and plan.plan.vTargetFuture >= STARTING_TARGET_SPEED and not CP.radarOffCan and CS.vEgo < 0.3:
-      events.append(create_event('noTarget', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))
+      events.append(create_event('noTarget', [ET.NO_ENTRY, ET.IMMEDIATE_DISABLE]))""""
 
     if not read_only:
       # update control state
