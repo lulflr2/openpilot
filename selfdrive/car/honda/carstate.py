@@ -279,11 +279,8 @@ class CarState(object):
 
     self.pedal_gas = cp.vl["POWERTRAIN_DATA"]['PEDAL_GAS']
     # crv doesn't include cruise control
-    if self.CP.carFingerprint in (CAR.CRV, CAR.ODYSSEY, CAR.ACURA_RDX, CAR.RIDGELINE, CAR.PILOT_2019, CAR.ODYSSEY_CHN):
-      self.car_gas = self.pedal_gas
-    else:
-      self.car_gas = cp.vl["GAS_PEDAL_2"]['CAR_GAS']
-
+    self.car_gas = self.pedal_gas
+   
     self.steer_torque_driver = cp.vl["MACCHINA"]['STEER_TORQUE_DRIVER']
     self.steer_override = abs(self.steer_torque_driver) > STEER_THRESHOLD[self.CP.carFingerprint]
 
@@ -293,16 +290,14 @@ class CarState(object):
       self.stopped = 0
       self.cruise_speed_offset = calc_cruise_offset(0, self.v_ego)
       if self.CP.carFingerprint in (CAR.CIVIC_BOSCH, CAR.ACCORDH, CAR.CRV_HYBRID):
-        self.brake_switch = cp.vl["POWERTRAIN_DATA"]['BRAKE_SWITCH']
-        self.brake_pressed = cp.vl["POWERTRAIN_DATA"]['BRAKE_PRESSED'] or \
-                          (self.brake_switch and self.brake_switch_prev and \
-                          cp.ts["POWERTRAIN_DATA"]['BRAKE_SWITCH'] != self.brake_switch_ts)
+        self.brake_switch = 0
+        self.brake_pressed = cp.vl["BRAKE"]['BRAKE_PRESSED']
         self.brake_switch_prev = self.brake_switch
-        self.brake_switch_ts = cp.ts["POWERTRAIN_DATA"]['BRAKE_SWITCH']
+        self.brake_switch_ts = 0
       else:
         self.brake_pressed = cp.vl["BRAKE"]['BRAKE_PRESSED']
       # On set, cruise set speed pulses between 254~255 and the set speed prev is set to avoid this.
-      self.v_cruise_pcm = self.v_cruise_pcm_prev if cp.vl["MACCHINA"]['CRUISE_SPEED'] > 160.0 else cp.vl["ACC_HUD"]['CRUISE_SPEED']
+      self.v_cruise_pcm = self.v_cruise_pcm_prev if cp.vl["MACCHINA"]['CRUISE_SPEED_PCM'] > 160.0 else cp.vl["MACCHINA"]['CRUISE_SPEED_PCM']
       self.v_cruise_pcm_prev = self.v_cruise_pcm
     else:
       self.brake_switch = 0
@@ -323,7 +318,7 @@ class CarState(object):
         self.brake_pressed = 1
 
     # TODO: discover the CAN msg that has the imperial unit bit for all other cars
-    self.is_metric = not cp.vl["HUD_SETTING"]['IMPERIAL_UNIT'] if self.CP.carFingerprint in (CAR.CIVIC) else False
+    self.is_metric = True
 
 # carstate standalone tester
 if __name__ == '__main__':

@@ -3,7 +3,8 @@
     "",
     "\\selfdrive",
     "\\selfdrive\\car",
-    "\\selfdrive\\car\\honda"
+    "\\selfdrive\\car\\honda",
+    "\\selfdrive\\controls"
   ],
   "SelectedNode": "\\selfdrive\\car\\honda\\carstate.py",
   "PreviewInSolutionExplorer": false
